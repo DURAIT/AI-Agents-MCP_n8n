@@ -1,0 +1,454 @@
+{
+  "name": "Web APP",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=input : {{ $json.query.message }}",
+        "options": {
+          "systemMessage": "=You are a helpful tool calling agent, call the tools whenever user ask you to do the task.\n\nMy Tool mapping list : \nGmail - when user ask to send email: call this tool\nGoogle sheet - when user ask to update in the sheet : call this tool\nGoogle Calendar - when user wants to block and schedule the event : call this tool\nGoogle docs - when user ask to create or update the document : call this tool\nSerpapi: When user wants to research from internet : call this tool.\n\nCurrent time : {{  $now  }}\nStrictly follow the IST time zone and act accordingly",
+          "maxIterations": 10
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "c3655bb4-8340-48d4-ba02-a778083c8b91",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=telegram_ {{ $json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        240,
+        240
+      ],
+      "id": "825be052-88b9-4864-ab5e-1112f37d61de",
+      "name": "Memory"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        96,
+        240
+      ],
+      "id": "3eb120ba-b175-44f6-bffb-55409924ef5b",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "oWWPki9PbxelFDDY",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "titu.durais@gmail.com",
+          "mode": "list",
+          "cachedResultName": "titu.durais@gmail.com"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        768,
+        240
+      ],
+      "id": "d7b18718-55fd-4e1a-9191-eaa381097089",
+      "name": "G-Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "X1dCtuIzivNIZY7Z",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        240
+      ],
+      "id": "749a289d-7bbb-4440-b5d6-35d13a0aa1bf",
+      "name": "Gmail",
+      "webhookId": "65bcb883-34bb-45f9-a232-4fb1b9e58d7d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "qwxectnGPzERAv8V",
+          "name": "Gmail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "11heSkp8pgIMWxcr94hrutv0-UGwqIUugMusTfXHr8KQ",
+          "mode": "list",
+          "cachedResultName": "student_enrollment",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11heSkp8pgIMWxcr94hrutv0-UGwqIUugMusTfXHr8KQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11heSkp8pgIMWxcr94hrutv0-UGwqIUugMusTfXHr8KQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Student_ID",
+              "displayName": "Student_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Course",
+              "displayName": "Course",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fee_Paid",
+              "displayName": "Fee_Paid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "City",
+              "displayName": "City",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Enrolled_Date",
+              "displayName": "Enrolled_Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        352,
+        240
+      ],
+      "id": "731cfadd-8dc9-4710-bbee-8629d7497d54",
+      "name": "G-Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "I2Zl9SSXQ2IcMXGS",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "default",
+        "title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Title', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        656,
+        240
+      ],
+      "id": "40b4bdc4-de8a-4181-9010-5768405f1464",
+      "name": "G-Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "3zK3ZEYBdupuMwzn",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "q": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Search_Query__q_', ``, 'string') }}",
+        "location": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Location__location_', ``, 'string') }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-serpapi.serpApiTool",
+      "typeVersion": 1,
+      "position": [
+        560,
+        240
+      ],
+      "id": "2349d47a-ac0e-4ef6-807f-8c6de2abb790",
+      "name": "Google",
+      "credentials": {
+        "serpApi": {
+          "id": "fXB7zVyfWvTIOzmz",
+          "name": "SerpApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "https://docs.google.com/document/d/1FpXDHlCcgOelfUItDf41RMN0hpkJxc8qSH-gpNpPrbw/edit?tab=t.0",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('actionFields0_Old_Text', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        464,
+        240
+      ],
+      "id": "d89ffca3-76ce-4502-8509-bd0060680969",
+      "name": "Update Doc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "3zK3ZEYBdupuMwzn",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "multiagent",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        0
+      ],
+      "id": "8b33e95f-ab76-4a7e-a8f4-b9192756b2f0",
+      "name": "Webhook",
+      "webhookId": "51a1e894-b87d-4ba1-b9ce-597945feabfb"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        592,
+        0
+      ],
+      "id": "ff83eb8a-f2ea-40c9-9d19-0b2d1a132a70",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "G-Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "G-Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "G-Docs": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Doc": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "e6a1cf84-35a3-4a48-ad17-a1cd0a0eabc3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "37b6eceed61c934be73a420a62940329603a4ad0f20883009f765037746ca92f"
+  },
+  "nodeGroups": [],
+  "id": "ySY95ckfY92IVtX6",
+  "tags": []
+}

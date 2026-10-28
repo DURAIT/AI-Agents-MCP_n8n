@@ -1,0 +1,163 @@
+{
+  "name": "AI Agent MCP",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=input : {{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=You are a helpful tool calling agent, call the tools whenever user ask you to do the task.\n\nMy Tool mapping list : \nGmail - when user ask to send email: call this tool\nGoogle sheet - when user ask to update in the sheet : call this tool\nGoogle Calendar - when user wants to block and schedule the event : call this tool\nGoogle docs - when user ask to create or update the document : call this tool\nSerpapi: When user wants to research from internet : call this tool.\n\nCurrent time : {{  $now  }}\nStrictly follow the IST time zone and act accordingly",
+          "maxIterations": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "24d9c53a-d2e4-4735-9337-3ab3cfb13165",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        240,
+        240
+      ],
+      "id": "bda1e5b8-539c-403d-9fbb-f4a571abef7b",
+      "name": "Memory"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        96,
+        240
+      ],
+      "id": "da3e6e7a-352f-44d6-af40-5f04252601b4",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "oWWPki9PbxelFDDY",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4daf3d69-1651-4846-93d8-a407d7c15d3d",
+      "name": "When chat message received",
+      "webhookId": "826800e1-c29d-4bdf-914f-a9100d017dd9"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://n8n-cb2w.srv2067534.hstgr.cloud/mcp-server/http",
+        "authentication": "mcpOAuth2Api",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.4,
+      "position": [
+        432,
+        240
+      ],
+      "id": "ae7a903d-8263-42d1-8ebd-27a909c487b7",
+      "name": "MCP n8n Client",
+      "credentials": {
+        "mcpOAuth2Api": {
+          "id": "8JuAt8wSmaF5K6wP",
+          "name": "MCP"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP n8n Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "fae043fb-21ce-4c7c-8440-0f10f18d0b9f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "37b6eceed61c934be73a420a62940329603a4ad0f20883009f765037746ca92f"
+  },
+  "nodeGroups": [],
+  "id": "pgL1YHC4zHVgVKFf",
+  "tags": []
+}
